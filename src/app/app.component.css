@@ -1,0 +1,28 @@
+.weather-icon {
+  width: 100px;
+  height: 100px;
+}
+
+.card {
+  border-radius: 15px;
+}
+
+.input-group input {
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.btn {
+  border-radius: 10px;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+  font-size: 14px;
+}
+
+.text-muted {
+  font-size: 16px;
+}
+
