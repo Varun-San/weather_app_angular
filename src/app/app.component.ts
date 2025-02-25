@@ -1,8 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpClient } from '@angular/common/http'; // ✅ Import HttpClientModule
+import {
+  HttpClientModule,
+  HttpClient,
+  HttpErrorResponse,
+} from '@angular/common/http'; // ✅ Import HttpClientModule
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -23,12 +29,31 @@ export class AppComponent {
 
   temp: number = 0;
   feels_like: number = 0;
+  message: string = '';
 
   // Uncomment to test API call
   onGetWeather() {
     this.http
       .get(
         `https://api.openweathermap.org/data/2.5/weather?q=${this.cityName}&appid=${this.api}&units=metric`
+      )
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          let errorMessage = 'An unexpected error occurred.';
+
+          if (error.status === 404) {
+            errorMessage = 'City not found. Please enter a valid city.';
+          } else if (error.status === 401) {
+            errorMessage = 'Invalid API key. Please check your API key.';
+          } else if (error.status === 0) {
+            errorMessage =
+              'Unable to connect to the server. Please check your network.';
+          }
+
+          this.message = errorMessage;
+          alert(this.message);
+          return throwError(() => new Error(errorMessage));
+        })
       )
       .subscribe((result: any) => {
         this.weatherReport = result;
