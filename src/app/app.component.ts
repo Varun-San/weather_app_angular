@@ -3,17 +3,16 @@ import {
   HttpClientModule,
   HttpClient,
   HttpErrorResponse,
-} from '@angular/common/http'; // ✅ Import HttpClientModule
+} from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, FormsModule, HttpClientModule], // ✅ Add HttpClientModule
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
@@ -30,6 +29,8 @@ export class AppComponent {
   temp: number = 0;
   feels_like: number = 0;
   message: string = '';
+  sunrise: string = '';
+  sunset: string = '';
 
   // Uncomment to test API call
   onGetWeather() {
@@ -51,7 +52,6 @@ export class AppComponent {
           }
 
           this.message = errorMessage;
-          alert(this.message);
           return throwError(() => new Error(errorMessage));
         })
       )
@@ -60,6 +60,9 @@ export class AppComponent {
         this.temp = Number(result.main?.temp);
         this.feels_like = Number(result?.main?.feels_like);
         console.log(this.weatherReport);
+        this.message = '';
+        this.sunrise = new Date(result.sys?.sunrise * 1000).toLocaleTimeString();
+        this.sunset = new Date(result.sys?.sunset * 1000).toLocaleTimeString();
       });
   }
   getTemperatureColor(temp: number): string {
